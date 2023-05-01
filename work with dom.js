@@ -1,30 +1,3 @@
-//регистрация
-const getLabel = (label, inputType, inputName, placeholder) => {
-  const labelContainer = document.createElement('label')
-  labelContainer.innerText = label
-
-  const inputElement = document.createElement('input')
-  inputElement.type = inputType
-  inputElement.name = inputName
-  inputElement.placeholder = placeholder
-
-  labelContainer.append(inputElement)
-
-  return labelContainer
-}
-
-const formContainer = document.createElement('form')
-formContainer.className = 'create-user-form'
-
-const userNameLabel = getLabel('Имя', 'text', 'userName', 'Введите ваше имя')
-const passwordLabel = getLabel('Пароль', 'password', 'password', 'Придумайте пароль')
-const button = document.createElement('button')
-button.type = 'submit'
-button.innerText ='Подтвердить'
-
-formContainer.append(userNameLabel, passwordLabel, button)
-document.body.prepend(formContainer)
-
 // основа
 const tasks = [
   {
@@ -87,7 +60,7 @@ const createTaskItem = (taskId, taskText) => {
 //создание блока с ошибкой
 const createErrorBlock = (errorMessage) => {
   const errorBlock = document.createElement('span')
-  errorBlock.className = 'c'
+  errorBlock.className = 'error-message-block'
   errorBlock.innerText = errorMessage
   return errorBlock
 }
@@ -115,8 +88,8 @@ createTaskForm.addEventListener('submit', (event) => {
     tasks.push(newTask)
     const taskItem = createTaskItem(newTask.id, newTask.text)
     contentList.append(taskItem)
-  }
-  else if (errorMessageBlockFromDOM) {
+  } 
+  if (errorMessageBlockFromDOM) {
     errorMessageBlockFromDOM.remove()
   }
 })
@@ -126,3 +99,47 @@ tasks.forEach((task) => {
   const taskItem = createTaskItem(task.id, task.text)
   contentList.append(taskItem)
 })
+
+// удаление задач
+
+const createdeleteModal = (text) => {
+  const modalOverlay = document.createElement('div')
+  modalOverlay.className = 'modal-overlay modal-overlay_hidden'
+
+  const deleteModal = document.createElement('div')
+  deleteModal.className = 'delete-modal'
+
+  modalOverlay.append(deleteModal)
+
+  const deleteModalQuestion = document.createElement('h3')
+  deleteModalQuestion.className = 'delete-modal__question'
+  deleteModalQuestion.innerText = text
+
+  const deleteModalButtons = document.createElement('div')
+  deleteModalButtons.className = 'delete-modal__buttons'
+
+  deleteModal.append(deleteModalQuestion, deleteModalButtons)
+
+  const buttonCancel = document.createElement('button')
+  buttonCancel.className = 'delete-modal__button delete-modal__cancel-button'
+  buttonCancel.innerText = 'Отмена'
+
+  const buttonConfirm = document.createElement('button')
+  buttonConfirm.className = 'delete-modal__button delete-modal__confirm-button'
+  buttonConfirm.innerText = 'Удалить'
+
+  deleteModalButtons.append(buttonCancel, buttonConfirm)
+
+  return {
+    modalOverlay,
+    deleteModal,
+    buttonCancel,
+    buttonConfirm,
+  }
+}
+
+let targetTaskIdToDelete = null
+
+const { modalOverlay, deleteModal, buttonCancel, buttonConfirm,} = createDeleteModal('Вы действительно хотите удалить эту задачу?')
+document.body.prepend(modalOverlay)
+
