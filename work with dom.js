@@ -168,3 +168,40 @@ tasksList.addEventListener('click', (event) => {
   }
 }
 })
+
+//реализация смену темы с темной на светлую при нажатии на кнопку “Tab”
+
+let isDark = false
+
+const themaElements = ({bodyBackground, taskColor, buttonBorder,}) => {
+  document.body.style.background = bodyBackground
+  document.querySelectorAll('.task-item').forEach((task) => {
+    task.style.color = taskColor
+  })
+  document.querySelectorAll('button').forEach((button) => {
+    button.style.border = buttonBorder
+  })
+}  
+
+window.addEventListener('keydown', (event) => {
+  const { code } = event
+  if (code === 'Tab') {
+    event.preventDefault()
+    isDark = !isDark
+    if (isDark) {
+      themaElements({
+        bodyBackground: '#24292E',
+        taskColor: '#ffffff',
+        buttonBorder: '1px solid #ffffff'
+      })
+    } else {
+        themaElements({
+          bodyBackground: 'initial',
+          taskColor: 'initial',
+          buttonBorder: 'none'
+        })
+      }
+    }
+  }
+)
+
