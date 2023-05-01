@@ -102,7 +102,7 @@ tasks.forEach((task) => {
 
 // удаление задач
 
-const createdeleteModal = (text) => {
+const createDeleteModal = (text) => {
   const modalOverlay = document.createElement('div')
   modalOverlay.className = 'modal-overlay modal-overlay_hidden'
 
@@ -131,15 +131,40 @@ const createdeleteModal = (text) => {
   deleteModalButtons.append(buttonCancel, buttonConfirm)
 
   return {
-    modalOverlay,
     deleteModal,
     buttonCancel,
     buttonConfirm,
+    modalOverlay,
   }
 }
 
 let targetTaskIdToDelete = null
 
-const { modalOverlay, deleteModal, buttonCancel, buttonConfirm,} = createDeleteModal('Вы действительно хотите удалить эту задачу?')
+const {deleteModal, buttonCancel, buttonConfirm, modalOverlay,} = createDeleteModal('Вы действительно хотите удалить эту задачу?')
 document.body.prepend(modalOverlay)
+buttonCancel.addEventListener('click', () => {
+  modalOverlay.classList.add('modal-overlay_hidden')
+})
+buttonConfirm.addEventListener('click', () => {
+   const deleteIndex = tasks.findIndex((task) => task.id === targetTaskIdToDelete)
+  if (deleteIndex >= 0) {
+    tasks.splice(deleteIndex, 1)
+    const taskItemHTML = document.querySelector(`[data-task-id="${targetTaskIdToDelete}"]`)
+    taskItemHTML.remove()
+    modalOverlay.classList.add('modal-overlay_hidden')
+  }
+})
 
+const tasksList = document.querySelector('.tasks-list')
+tasksList.addEventListener('click', (event) => {
+  const { target } = event
+  const closestTarget = target.closest('.task-item__delete-button')
+  if (closestTarget) {
+    const closestTask = closestTarget.closest('.task-item')
+    if (closestTask) {
+    const taskId = closestTask.dataset.taskId
+    targetTaskIdToDelete = taskId
+    modalOverlay.classList.remove('modal-overlay_hidden')
+  }
+}
+})
